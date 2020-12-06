@@ -2,15 +2,26 @@
 
 namespace Faker_Lib.FieldGenerators
 {
-    class DecimalGenerator : IGenerator
+    internal class DecimalGenerator : IGenerator
     {
         private Random random = new Random();
 
+        public int NextInt32()
+        {
+            int firstBits = random.Next(0, 1 << 4) << 28;
+            int lastBits = random.Next(0, 1 << 28);
+            return firstBits | lastBits;
+        }
+
         public object Generate()
         {
-            DateTime start = new DateTime(1990, 1, 1);
-            TimeSpan range = (DateTime.Now - start);
-            return start.AddDays(random.Next(range.Days));
+            byte scale = (byte)random.Next(29);
+            bool sign = random.Next(2) == 1;
+            return new decimal(NextInt32(),
+                               NextInt32(),
+                               NextInt32(),
+                               sign,
+                               scale);
         }
     }
 }
