@@ -1,16 +1,15 @@
 ﻿using System;
 
-
-namespace Faker_Lib.FieldGenerators
+namespace IntGenerator
 {
-    class DoubleGenerator : IGenerator
+    public class IntGenerator
     {
         private Random random = new Random();
         public Type generatedType { get; private set; }
 
         public object Generate()
         {
-            return random.NextDouble();
+            return random.Next();
         }
     }
 }

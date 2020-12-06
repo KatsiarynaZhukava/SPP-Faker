@@ -5,6 +5,7 @@ namespace Faker_Lib.FieldGenerators
     class UIntGenerator : IGenerator
     {
         private Random random = new Random();
+        public Type generatedType { get; private set; }
 
         public object Generate()
         {

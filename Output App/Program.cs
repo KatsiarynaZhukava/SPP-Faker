@@ -9,6 +9,7 @@ namespace Output_App
         static void Main(string[] args)
         {
             var faker = new Faker();
+
         }
     }
 }

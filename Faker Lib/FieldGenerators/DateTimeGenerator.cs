@@ -7,6 +7,7 @@ namespace Faker_Lib.FieldGenerators
     class DateTimeGenerator : IGenerator
     {
         private Random random = new Random();
+        public Type generatedType { get; private set; }
 
         public object Generate()
         {

@@ -5,6 +5,7 @@ namespace Faker_Lib.FieldGenerators
     internal class DecimalGenerator : IGenerator
     {
         private Random random = new Random();
+        public Type generatedType { get; private set; }
 
         public int NextInt32()
         {

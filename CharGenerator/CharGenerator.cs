@@ -1,16 +1,15 @@
 ﻿using System;
 
-
-namespace Faker_Lib.FieldGenerators
+namespace CharGenerator
 {
-    class DoubleGenerator : IGenerator
+    public class CharGenerator
     {
         private Random random = new Random();
         public Type generatedType { get; private set; }
 
         public object Generate()
         {
-            return random.NextDouble();
+            return (char)random.Next(0xFF);
         }
     }
 }
