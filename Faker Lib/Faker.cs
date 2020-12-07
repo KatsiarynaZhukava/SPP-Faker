@@ -1,4 +1,6 @@
-﻿using Faker_Lib.FieldGenerators;
+﻿using Faker_Lib;
+using Faker_Lib.FieldGenerators;
+using Faker_Lib.FieldGenerators.GenericTypeGenerator;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,42 +12,189 @@ namespace FakerLib
 {
     public class Faker
     {
-        public Dictionary<Type, IGenerator> generatorDictionary;
-        private Stack<Type> circleStack;
+        Dictionary<Type, ISimpleTypeGenerator> simpleTypesGenerators;
+        Dictionary<Type, IGenericTypeGenerator> genericTypesGenerators;
+        public Stack<Type> generatedTypes;
+        protected const string pluginsDirectoryPath = "D:\\BSUIR\\Labs\\Labs_Sem5\\SPP\\Faker\\Plugins";
 
-        public Faker()
+        public T Create<T>()
         {
-            generatorDictionary = new Dictionary<Type, IGenerator>();
-            circleStack = new Stack<Type>();
-            Assembly generatorsAssembly = Assembly.GetAssembly(typeof(IGenerator));
-            AddGenerators(generatorsAssembly);
-            LoadPlugins();
+            return (T)Create(typeof(T));
         }
-        public void AddGenerators(Assembly assembly)
+
+        protected object Create(Type type)
         {
-            Type[] typeArray = assembly.GetTypes();
-            foreach (Type type in typeArray)
+            object generated;
+
+            if (simpleTypesGenerators.TryGetValue(type, out ISimpleTypeGenerator simpleTypeGenerator))
             {
-                if (typeof(IGenerator).IsAssignableFrom(type) && type.IsClass)
+                generated = simpleTypeGenerator.Generate();
+            }
+            else if (type.IsGenericType && genericTypesGenerators.TryGetValue(type.GetGenericTypeDefinition(), out IGenericTypeGenerator genericTypeGenerator))
+            {
+                generated = genericTypeGenerator.Generate(type.GenericTypeArguments[0]);
+            }
+            else if (type.IsClass && !type.IsGenericType && !type.IsArray && !type.IsPointer && !type.IsAbstract && !generatedTypes.Contains(type))
+            {
+                int maxConstructorFieldsCount = 0, curConstructorFieldsCount;
+                ConstructorInfo constructorToUse = null;
+
+                foreach (ConstructorInfo constructor in type.GetConstructors())
                 {
-                    ConstructorInfo[] constructors = type.GetConstructors();
-                    IGenerator generator = (IGenerator)constructors[0].Invoke(new object[] {});
-                    if (generatorDictionary.Keys.Contains(generator.generatedType))
-                        continue;
-                    else
-                        generatorDictionary.Add(generator.generatedType, generator);
+                    curConstructorFieldsCount = constructor.GetParameters().Length;
+                    if (curConstructorFieldsCount > maxConstructorFieldsCount)
+                    {
+                        maxConstructorFieldsCount = curConstructorFieldsCount;
+                        constructorToUse = constructor;
+                    }
+                }
+
+                generatedTypes.Push(type);
+                if (constructorToUse == null)
+                {
+                    generated = CreateByProperties(type);
+                }
+                else
+                {
+                    generated = CreateByConstructor(type, constructorToUse);
+                }
+                generatedTypes.Pop();
+            }
+            else if (type.IsValueType)
+            {
+                generated = Activator.CreateInstance(type);
+            }
+            else
+            {
+                generated = null;
+            }
+
+            return generated;
+        }
+
+
+        protected object CreateByProperties(Type type)
+        {
+            object generated = Activator.CreateInstance(type);
+
+            foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public))
+            {
+                object value = Create(fieldInfo.FieldType);
+                fieldInfo.SetValue(generated, value);
+            }
+
+            foreach (PropertyInfo propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public))
+            {
+                if (propertyInfo.CanWrite)
+                {
+                    object value = Create(propertyInfo.PropertyType);
+                    propertyInfo.SetValue(generated, value);
+                }
+            }
+            return generated;
+        }
+
+        protected object CreateByConstructor(Type type, ConstructorInfo constructor)
+        {
+            var parametersValues = new List<object>();
+
+            foreach (ParameterInfo parameterInfo in constructor.GetParameters())
+            {
+                object value = Create(parameterInfo.ParameterType);
+                parametersValues.Add(value);
+            }
+
+            try
+            {
+                return constructor.Invoke(parametersValues.ToArray());
+            }
+            catch (TargetInvocationException)
+            {
+                return null;
+            }
+        }
+
+        public Faker(string pluginsPath)
+        {
+            ISimpleTypeGenerator pluginGenerator;
+            List<Assembly> assemblies = new List<Assembly>();
+
+            generatedTypes = new Stack<Type>();
+            simpleTypesGenerators = CreateSimpleTypesGeneratorsDictionary();
+            genericTypesGenerators = CreateGenericTypesGeneratorsDictionary(simpleTypesGenerators);
+
+            try
+            {
+                foreach (string file in Directory.GetFiles(pluginsPath, "*.dll"))
+                {
+                    try
+                    {
+                        assemblies.Add(Assembly.LoadFile(file));
+                    }
+                    catch (BadImageFormatException)
+                    { }
+                    catch (FileLoadException)
+                    { }
+                }
+            }
+            catch (DirectoryNotFoundException)
+            { }
+
+            foreach (Assembly assembly in assemblies)
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    foreach (Type typeInterface in type.GetInterfaces())
+                    {
+                        if (typeInterface.Equals(typeof(ISimpleTypeGenerator)))
+                        {
+                            pluginGenerator = (ISimpleTypeGenerator)Activator.CreateInstance(type);
+                            simpleTypesGenerators.Add(pluginGenerator.GeneratedType, pluginGenerator);
+                        }
+                    }
                 }
             }
         }
-        public void LoadPlugins()
-        {
-            const string directory = "D:\\BSUIR\\Labs\\Labs_Sem5\\SPP\\Plugins";
 
-            foreach (string path in Directory.GetFiles(directory, "*.dll"))
-            {
-                Assembly assembly = Assembly.LoadFile(new FileInfo(path).FullName);
-                AddGenerators(assembly);
-            }
+        private static void AddSimpleGeneratorToDictionary(ISimpleTypeGenerator generator, Dictionary<Type, ISimpleTypeGenerator> dictionary)
+        {
+            dictionary.Add(generator.GeneratedType, generator);
         }
+
+        static Dictionary<Type, ISimpleTypeGenerator> CreateSimpleTypesGeneratorsDictionary()
+        {
+            var dictionary = new Dictionary<Type, ISimpleTypeGenerator>();
+
+            AddSimpleGeneratorToDictionary(new BoolGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new ByteGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new DateTimeGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new DecimalGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new DoubleGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new FloatGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new LongGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new SByteGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new ShortGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new StringGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new UIntGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new ULongGenerator(), dictionary);
+            AddSimpleGeneratorToDictionary(new UShortGenerator(), dictionary);
+
+            return dictionary;
+        }
+
+        static Dictionary<Type, IGenericTypeGenerator> CreateGenericTypesGeneratorsDictionary(Dictionary<Type, ISimpleTypeGenerator> simpleTypesGenerators)
+        {
+            var dictionary = new Dictionary<Type, IGenericTypeGenerator>();
+            IGenericTypeGenerator generator;
+
+            generator = new ListGenerator(simpleTypesGenerators);
+            dictionary.Add(generator.GeneratedType, generator);
+
+            return dictionary;
+        }
+
+        public Faker()
+            : this(pluginsDirectoryPath)
+        { }
     }
 }

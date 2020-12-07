@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Output App", "Output App\Ou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FakerLib", "Faker Lib\FakerLib.csproj", "{7D69082F-CA6A-4D2B-B11D-D3C04EF8E418}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharGenerator", "CharGenerator\CharGenerator.csproj", "{5E31ED2D-29B3-4D98-9855-7705F8664804}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharGenerator", "CharGenerator\CharGenerator.csproj", "{5E31ED2D-29B3-4D98-9855-7705F8664804}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntGenerator", "IntGenerator\IntGenerator.csproj", "{834330C5-CF45-46AE-9002-44CB5E226A09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntGenerator", "IntGenerator\IntGenerator.csproj", "{834330C5-CF45-46AE-9002-44CB5E226A09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{DEEEDFFF-2EED-47F0-A9DA-AA0AF2D5C9AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{834330C5-CF45-46AE-9002-44CB5E226A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{834330C5-CF45-46AE-9002-44CB5E226A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{834330C5-CF45-46AE-9002-44CB5E226A09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEEEDFFF-2EED-47F0-A9DA-AA0AF2D5C9AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEEEDFFF-2EED-47F0-A9DA-AA0AF2D5C9AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEEEDFFF-2EED-47F0-A9DA-AA0AF2D5C9AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEEEDFFF-2EED-47F0-A9DA-AA0AF2D5C9AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

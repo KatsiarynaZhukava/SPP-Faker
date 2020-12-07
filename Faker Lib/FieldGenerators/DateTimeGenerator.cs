@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Faker_Lib.FieldGenerators
 {
-    class DateTimeGenerator : IGenerator
+    class DateTimeGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType { get; private set; }
-
+        public Type generatedType = typeof(DateTime);
+        public Type GeneratedType { get => generatedType; }
         public object Generate()
         {
             DateTime start = new DateTime(1800, 1, 1);

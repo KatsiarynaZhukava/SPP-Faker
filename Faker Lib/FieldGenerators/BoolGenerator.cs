@@ -2,10 +2,11 @@
 
 namespace Faker_Lib.FieldGenerators
 {
-    class BoolGenerator : IGenerator
+    class BoolGenerator : ISimpleTypeGenerator
     { 
         private Random random = new Random();
-        public Type generatedType { get; private set; }
+        public Type generatedType = typeof(bool);
+        public Type GeneratedType { get => generatedType; }
 
         public object Generate()
         {

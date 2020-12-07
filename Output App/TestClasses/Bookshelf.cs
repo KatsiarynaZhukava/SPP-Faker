@@ -6,6 +6,6 @@ namespace Output_App.TestClasses
 {
     class Bookshelf
     {
-        private List 
+        private List<Book> books { get; set; }
     }
 }

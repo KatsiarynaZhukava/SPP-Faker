@@ -2,10 +2,11 @@
 
 namespace Faker_Lib.FieldGenerators
 {
-    class ULongGenerator : IGenerator
+    class ULongGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType { get; private set; }
+        public Type generatedType = typeof(ulong);
+        public Type GeneratedType { get => generatedType; }
 
         public object Generate()
         {

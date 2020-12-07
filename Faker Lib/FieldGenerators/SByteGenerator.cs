@@ -2,10 +2,11 @@
 
 namespace Faker_Lib.FieldGenerators
 {
-    class SByteGenerator : IGenerator
+    class SByteGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType { get; private set; }
+        public Type generatedType = typeof(sbyte);
+        public Type GeneratedType { get => generatedType; }
 
         public object Generate()
         {

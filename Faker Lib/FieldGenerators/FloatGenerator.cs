@@ -2,11 +2,11 @@
 
 namespace Faker_Lib.FieldGenerators
 {
-    class FloatGenerator : IGenerator
+    class FloatGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType { get; private set; }
-
+        public Type generatedType = typeof(float);
+        public Type GeneratedType { get => generatedType; }
         public object Generate()
         {
             return (float)random.NextDouble();

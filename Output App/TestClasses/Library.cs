@@ -7,5 +7,6 @@ namespace Output_App.TestClasses
     class Library
     {
         private List<Bookshelf> bookshelves;
+        private List<Bookshelf> Bookshelves { get; set; }
     }
 }

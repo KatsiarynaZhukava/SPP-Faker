@@ -3,10 +3,11 @@ using System.Text;
 
 namespace Faker_Lib.FieldGenerators
 {
-    class StringGenerator : IGenerator
+    class StringGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType { get; private set; }
+        public Type generatedType = typeof(string);
+        public Type GeneratedType { get => generatedType; }
 
         public object Generate()
         {

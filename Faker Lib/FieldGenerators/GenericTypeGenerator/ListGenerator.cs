@@ -1,34 +1,55 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using FakerLib;
 
 namespace Faker_Lib.FieldGenerators.GenericTypeGenerator
 {
     class ListGenerator : IGenericTypeGenerator
     {
-        private Random random = new Random();
+        protected IDictionary<Type, ISimpleTypeGenerator> simpleTypeGenerators;
+        public Type GeneratedType { get; protected set; }
 
-        public Type generatedType { get; private set; }
-        public Faker faker { get; private set; }
-        public ListGenerator(Random rand)
+        public object Generate(Type baseType)
         {
-            random = rand;
-            generatedType = typeof(List<>);
-            faker = new Faker();
+            IList result = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(baseType));
+            int listSize = new Random().Next() % 20;
+
+            if (simpleTypeGenerators.TryGetValue(baseType, out ISimpleTypeGenerator baseTypeGenerator))
+            {
+                for (int i = 0; i < listSize; i++)
+                {
+                    result.Add(baseTypeGenerator.Generate());
+                }
+            }
+            /*else
+            {
+                if (baseType.IsArray)
+                {
+                    byte listSize = (byte)byteValueGenerator.Generate();
+
+                    for (int i = 0; i < listSize; i++)
+                    {
+                        result.Add(Generate(baseType.GetElementType()));
+                    }
+                }
+                else
+                {
+                    byte listSize = (byte)byteValueGenerator.Generate();
+                    for (int i = 0; i < listSize; i++)
+
+                    {
+
+                        result.Add(Generate(baseType.GetGenericArguments()[0]));
+                    }
+                }
+            }*/
+            return result;
         }
 
-        public object Generate(Type type)
+        public ListGenerator(IDictionary<Type, ISimpleTypeGenerator> simpleTypeGenerators)
         {
-            List<object> list = new List<object>();
-
-            int length = random.Next(5, 10);
-
-            for (int i = 0; i < length; i++)
-            {
-                list.Add(faker.Create(type));
-            }
-            return list;
+            GeneratedType = typeof(List<>);
+            this.simpleTypeGenerators = simpleTypeGenerators;
         }
     }
 }

@@ -3,10 +3,11 @@
 
 namespace Faker_Lib.FieldGenerators
 {
-    class DoubleGenerator : IGenerator
+    class DoubleGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType { get; private set; }
+        public Type generatedType = typeof(Double);
+        public Type GeneratedType { get => generatedType; }
 
         public object Generate()
         {

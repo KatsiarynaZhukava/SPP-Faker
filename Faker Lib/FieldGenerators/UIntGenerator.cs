@@ -2,10 +2,11 @@
 
 namespace Faker_Lib.FieldGenerators
 {
-    class UIntGenerator : IGenerator
+    class UIntGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType { get; private set; }
+        public Type generatedType = typeof(uint);
+        public Type GeneratedType { get => generatedType; }
 
         public object Generate()
         {

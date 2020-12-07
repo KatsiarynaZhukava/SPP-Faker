@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Faker_Lib.FieldGenerators.GenericTypeGenerator
 {
-    interface IGenericTypeGenerator
+    public interface IGenericTypeGenerator
     {
+        Type GeneratedType { get; }
+
         object Generate(Type type);
-        Type generatedType { get; }
-        Faker faker { get; }
     }
 }

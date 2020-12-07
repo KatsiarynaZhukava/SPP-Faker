@@ -8,8 +8,9 @@ namespace Output_App
     {
         static void Main(string[] args)
         {
-            var faker = new Faker();
-
+            Faker faker = new Faker();
+            Book book = faker.Create<Book>();
+            Library library = faker.Create<Library>();
         }
     }
 }
