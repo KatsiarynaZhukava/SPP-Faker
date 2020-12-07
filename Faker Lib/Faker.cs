@@ -72,7 +72,6 @@ namespace FakerLib
             return generated;
         }
 
-
         protected object CreateByProperties(Type type)
         {
             object generated = Activator.CreateInstance(type);
@@ -142,17 +141,22 @@ namespace FakerLib
 
             foreach (Assembly assembly in assemblies)
             {
-                foreach (Type type in assembly.GetTypes())
+                var str = assembly.GetName().Name;
+                Console.WriteLine(str);
+                if (assembly.GetName().Name != "FakerLib")
                 {
-                    foreach (Type typeInterface in type.GetInterfaces())
+                    foreach (Type type in assembly.GetTypes())
                     {
-                        if (typeInterface.Equals(typeof(ISimpleTypeGenerator)))
+                        foreach (Type typeInterface in type.GetInterfaces())
                         {
-                            pluginGenerator = (ISimpleTypeGenerator)Activator.CreateInstance(type);
-                            simpleTypesGenerators.Add(pluginGenerator.GeneratedType, pluginGenerator);
+                            if (typeInterface.Equals(typeof(ISimpleTypeGenerator)))
+                            {
+                                pluginGenerator = (ISimpleTypeGenerator)Activator.CreateInstance(type);
+                                simpleTypesGenerators.Add(pluginGenerator.GeneratedType, pluginGenerator);
+                            }
                         }
                     }
-                }
+                }                
             }
         }
 
