@@ -5,7 +5,7 @@ namespace Faker_Lib.FieldGenerators
     class ULongGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType = typeof(ulong);
+        private Type generatedType = typeof(ulong);
         public Type GeneratedType { get => generatedType; }
 
         public object Generate()

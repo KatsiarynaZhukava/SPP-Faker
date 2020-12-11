@@ -5,7 +5,7 @@ namespace Faker_Lib.FieldGenerators
     class UIntGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType = typeof(uint);
+        private Type generatedType = typeof(uint);
         public Type GeneratedType { get => generatedType; }
 
         public object Generate()

@@ -11,9 +11,7 @@ namespace CharGenerator
 
         public object Generate()
         {
-            char[] base64Representation = new char[4];
-            Convert.ToBase64CharArray(inArray: new byte[] { (byte)random.Next() }, offsetIn: 0, length: 1, outArray: base64Representation, offsetOut: 0);
-            return base64Representation[random.Next(0, 2)];
+            return (char)random.Next('a', 'z');
         }
     }
 }

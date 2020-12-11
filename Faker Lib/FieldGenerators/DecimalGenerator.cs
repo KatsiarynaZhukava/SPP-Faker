@@ -5,7 +5,7 @@ namespace Faker_Lib.FieldGenerators
     internal class DecimalGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType = typeof(Decimal);
+        private Type generatedType = typeof(Decimal);
         public Type GeneratedType { get => generatedType; }
 
         public int NextInt32()

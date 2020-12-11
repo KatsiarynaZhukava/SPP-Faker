@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Faker Lib\FakerLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Serializer\" />
+  </ItemGroup>
+
 </Project>

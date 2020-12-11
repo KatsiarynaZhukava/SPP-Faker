@@ -7,8 +7,10 @@ namespace Faker_Lib.FieldGenerators
     class DateTimeGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType = typeof(DateTime);
+
+        private Type generatedType = typeof(DateTime);
         public Type GeneratedType { get => generatedType; }
+
         public object Generate()
         {
             DateTime start = new DateTime(1800, 1, 1);

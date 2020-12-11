@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 
 namespace Faker_Lib.FieldGenerators
@@ -6,22 +7,16 @@ namespace Faker_Lib.FieldGenerators
     class StringGenerator : ISimpleTypeGenerator
     {
         private Random random = new Random();
-        public Type generatedType = typeof(string);
+        private Type generatedType = typeof(string);
         public Type GeneratedType { get => generatedType; }
 
         public object Generate()
         {
-            int length = random.Next();
-            StringBuilder generatedString = new StringBuilder();
-            char letter;
+            int length = random.Next() % 20;
 
-            for (int i = 0; i < length; i++)
-            {
-                int shift = Convert.ToInt32(Math.Floor(25 * random.NextDouble()));
-                letter = Convert.ToChar(shift + 65);
-                generatedString.Append(letter);
-            }
-            return generatedString.ToString();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }
